@@ -1,11 +1,11 @@
 package com.example.todoapi.repository.sample;
 
-import org.springframework.stereotype.Repository;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
-@Repository
-public class SampleRepository {
+@Mapper
+public interface SampleRepository {
 
-  public SampleRecord select() {
-    return new SampleRecord("Hello, world!!");
-  }
+  @Select("select content from samples order by id limit 1")
+  SampleRecord select();
 }
