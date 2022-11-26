@@ -3,6 +3,8 @@ info:
   title: TODO API Document
   version: "0.0.1"
   description: TODO APIのドキュメントです
+servers:
+  - url: http://localhost:8080
 tags:
   - name: opts
     description: 運用監視関連のAPI
@@ -17,11 +19,19 @@ paths:
         200:
           description: OK
 
-  /tasks/1:
+  /tasks/{taskId}:
     get:
       tags:
         - tasks
       operationId: showTask
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          description: "詳細を取得するタスクのID"
+          schema:
+            type: integer
+            format: int64
       responses:
         200:
           description: OK
