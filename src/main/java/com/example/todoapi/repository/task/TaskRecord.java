@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Value
 public class TaskRecord {
 
-  private long id;
+  private Long id;
   private String title;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
