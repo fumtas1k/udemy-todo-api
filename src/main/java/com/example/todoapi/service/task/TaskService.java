@@ -15,6 +15,6 @@ public class TaskService {
     return taskRepository
         .select(taskId)
         .map(record -> new TaskEntity(record.getId(), record.getTitle()))
-        .orElseThrow(() -> new IllegalStateException("id: " + taskId + "のタスクは存在しません!"));
+        .orElseThrow(() -> new TaskEntityNotFoundException(taskId));
   }
 }
