@@ -3,12 +3,15 @@ package com.example.todoapi.controller.task;
 import com.example.todoapi.controller.TasksApi;
 import com.example.todoapi.model.TaskDTO;
 import com.example.todoapi.model.TaskForm;
+import com.example.todoapi.model.TaskListDTO;
+import com.example.todoapi.service.task.TaskEntity;
 import com.example.todoapi.service.task.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 import java.net.URI;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -19,9 +22,7 @@ public class TaskController implements TasksApi {
   @Override
   public ResponseEntity<TaskDTO> showTask(Long taskId) {
     var entity = taskService.find(taskId);
-    var body = new TaskDTO();
-    body.setId(entity.getId());
-    body.setTitle(entity.getTitle());
+    var body = toTaskDTO(entity);
     return ResponseEntity.ok(body);
   }
 
@@ -29,10 +30,23 @@ public class TaskController implements TasksApi {
   public ResponseEntity<TaskDTO> createTask(TaskForm form) {
     var entity = taskService.create(form.getTitle());
 
-    var dto = new TaskDTO();
-    dto.setId(entity.getId());
-    dto.setTitle(entity.getTitle());
+    var dto = toTaskDTO(entity);
 
     return ResponseEntity.created(URI.create("/tasks/" + dto.getId())).body(dto);
+  }
+
+  @Override
+  public ResponseEntity<TaskListDTO> listTasks() {
+    var entityList = taskService.find();
+    var dto = new TaskListDTO();
+    dto.setResults(entityList.stream().map(this::toTaskDTO).collect(Collectors.toList()));
+    return ResponseEntity.ok(dto);
+  }
+
+  private TaskDTO toTaskDTO(TaskEntity taskEntity) {
+    var taskDTO = new TaskDTO();
+    taskDTO.setId(taskEntity.getId());
+    taskDTO.setTitle(taskEntity.getTitle());
+    return taskDTO;
   }
 }
