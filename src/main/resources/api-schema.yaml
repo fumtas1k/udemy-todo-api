@@ -25,6 +25,26 @@ paths:
       operationId: "listTasks"
       tags:
         - tasks
+      parameters:
+        - name: limit
+          in: query
+          required: true
+          description: リストに含まれるリソースの最大値
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 100
+            default: 10
+        - name: offset
+          in: query
+          required: true
+          description: オフセット
+          schema:
+            type: integer
+            format: int64
+            minimum: 0
+            default: 0
       responses:
         200:
           description: ok
@@ -92,16 +112,26 @@ paths:
                 $ref: "#/components/schemas/ResourceNotFoundError"
 components:
   schemas:
-    TaskForm:
+    PageDTO:
+      description: ページング情報
       type: object
       properties:
-        title:
-          type: string
-          description: 作成されるタスクのタイトル
-          maxLength: 256
-          minLength: 1
+        limit:
+          description: リクエストされたリミット
+          type: integer
+          format: int32
+        offset:
+          description: リクエストされたオフセット
+          type: integer
+          format: int64
+        size:
+          description: 取得できた件数
+          type: integer
+          format: int32
       required:
-        - title
+        - limit
+        - offset
+        - size
     TaskDTO:
       type: object
       properties:
@@ -118,12 +148,24 @@ components:
     TaskListDTO:
       type: object
       properties:
+        page:
+          $ref: "#/components/schemas/PageDTO"
         results:
           type: array
           items:
             $ref: "#/components/schemas/TaskDTO"
       required:
         - results
+    TaskForm:
+      type: object
+      properties:
+        title:
+          type: string
+          description: 作成されるタスクのタイトル
+          maxLength: 256
+          minLength: 1
+      required:
+        - title
     ResourceNotFoundError:
       description: 指定したリソースが存在しない
       type: object

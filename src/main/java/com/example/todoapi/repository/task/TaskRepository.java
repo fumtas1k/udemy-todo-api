@@ -14,8 +14,8 @@ public interface TaskRepository {
   @Select("select id, title, created_at, updated_at from tasks where id=#{taskId}")
   Optional<TaskRecord> select(Long taskId);
 
-  @Select("select id, title, created_at, updated_at from tasks")
-  List<TaskRecord> selectList();
+  @Select("select id, title, created_at, updated_at from tasks limit #{limit} offset #{offset}")
+  List<TaskRecord> selectList(int limit, long offset);
 
   @Options(useGeneratedKeys = true, keyProperty = "id")
   @Insert("insert into tasks (title) values (#{title})")
